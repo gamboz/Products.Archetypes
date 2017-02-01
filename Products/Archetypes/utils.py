@@ -18,6 +18,7 @@ from Acquisition import aq_base, aq_inner, aq_parent
 from ExtensionClass import ExtensionClass
 from App.class_init import InitializeClass
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import safe_unicode
 from Products.Archetypes.log import log
 from Products.Archetypes.config import DEBUG_SECURITY
 from Products.statusmessages.interfaces import IStatusMessage
@@ -249,7 +250,7 @@ class DisplayList:
     """Static display lists, can look up on
     either side of the dict, and get them in sorted order
 
-    NOTE: Both keys and values *must* contain unique entries! You can *not* 
+    NOTE: Both keys and values *must* contain unique entries! You can *not*
     have the same value twice. This is a "feature" not a bug. DisplayLists
     are meant to be used as a list inside html form entry like a drop down.
 
@@ -878,16 +879,11 @@ def addStatusMessage(request, message, type='info'):
 
 def transaction_note(note):
     """ Write human legible note """
-
-    if type(note) == unicode:
-        import unicodedata
-        note = unicodedata.normalize('NFKD', note).encode('utf-8', 'ignore')
-
     T = transaction.get()
     if (len(T.description) + len(note)) >= 65533:
-        logger.warning('Transaction note too large omitting %s' % str(note))
+        logger.warning(u'Transaction note too large omitting %s' % note)
     else:
-        T.note(str(note))
+        T.note(safe_unicode(note))
 
 
 def isFactoryContained(obj):
