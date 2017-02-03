@@ -205,54 +205,12 @@ ZCML registrations in function tests.
 WebDAV
 ------
 
-Now for the tricky part. WebDAV requests are *not* allowed to acquire
+WebDAV is not supported by the WSGI-Publisher. These test have therefore
+been removed.
+
+The tests showed that WebDAV requests are *not* allowed to acquire
 content, because that would completely break creation of content
 through WebDAV.
-
-  >>> print http(r"""
-  ... PROPFIND /%s/test_document HTTP/1...
-  ... Authorization: Basic %s:%s
-  ... Content-Type: text/xml; charset="utf-8"
-  ... Depth: 0
-  ...
-  ... <?xml version="1.0" encoding="utf-8"?>
-  ...   <DAV:propfind xmlns:DAV="DAV:"
-  ...      xmlns:zope="http://www.zope.org/propsets/default">
-  ...      <DAV:prop><zope:title/></DAV:prop>
-  ...   </DAV:propfind>
-  ... """ % (portal_name, user_name, user_password))
-  HTTP/1... 207 Multi-Status
-  ...Root Document...
-
-  >>> print http(r"""
-  ... PROPFIND /%s/simple_folder/test_document HTTP/1...
-  ... Authorization: Basic %s:%s
-  ... Content-Type: text/xml; charset="utf-8"
-  ... Depth: 0
-  ...
-  ... <?xml version="1.0" encoding="utf-8"?>
-  ...   <DAV:propfind xmlns:DAV="DAV:"
-  ...      xmlns:zope="http://www.zope.org/propsets/default">
-  ...      <DAV:prop><zope:title/></DAV:prop>
-  ...   </DAV:propfind>
-  ... """ % (portal_name, user_name, user_password))
-  HTTP/1... 404 Not Found
-  ...
-
-  >>> print http(r"""
-  ... PROPFIND /%s/simple_btree_folder/test_document HTTP/1...
-  ... Authorization: Basic %s:%s
-  ... Content-Type: text/xml; charset="utf-8"
-  ... Depth: 0
-  ...
-  ... <?xml version="1.0" encoding="utf-8"?>
-  ...   <DAV:propfind xmlns:DAV="DAV:"
-  ...      xmlns:zope="http://www.zope.org/propsets/default">
-  ...      <DAV:prop><zope:title/></DAV:prop>
-  ...   </DAV:propfind>
-  ... """ % (portal_name, user_name, user_password))
-  HTTP/1... 404 Not Found
-  ...
 
 Should be possible to create objects via PUT that would otherwise be
 acquired.
@@ -366,7 +324,7 @@ should be of the same kind as the parent:
   >>> folder = portal.simple_folder.simple_folder
   >>> print folder.getPortalTypeName()
   SimpleFolder
-  
+
 manage_afterMKCOL is called in the MKCOL_handler code for all Archetypes. The
 test types are assigning a dummy var called_afterMKCOL_hook.
   >>> folder.called_afterMKCOL_hook
@@ -387,5 +345,5 @@ test types are assigning a dummy var called_afterMKCOL_hook.
 
 Clean up
   >>> AppZapper().clear()
-  
+
 

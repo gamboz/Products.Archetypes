@@ -53,6 +53,9 @@ Bug fixes:
 - fix randomly failing test in ``test_referenceable``.
   [jensens]
 
+- Remove tests that use webdav since the WSGI-Publisher does not support it.
+  [pbauer]
+
 1.12 (2016-12-06)
 -----------------
 
